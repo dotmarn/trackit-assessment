@@ -17,6 +17,18 @@ class TrackTik
         $this->client = new \Ixudra\Curl\CurlService();
     }
 
+    public function create(EmployeeDTO $employeeDTO)
+    {
+        $payload = $employeeDTO->mapData();
+        return $this->makeRequest($this->baseUrl . "/v1/employees", $payload);
+    }
+
+    public function update(EmployeeDTO $employeeDTO)
+    {
+        $payload = $employeeDTO->mapData();
+        return $this->makeRequest($this->baseUrl . "/v1/employees/{$payload['id']}", $payload, "PATCH");
+    }
+
     protected function makeRequest($url, $payload, $method = "POST")
     {
         $token = $this->generateAccessToken();
@@ -44,7 +56,7 @@ class TrackTik
             if ($result->status === Response::HTTP_OK) {
                 return response()->apiSuccess(Response::HTTP_OK, 'Successful...', $result->content);
             }
-            
+
             return response()->apiError($result->status, $result->content->message);
 
         } catch (\Throwable $th) {
@@ -93,15 +105,4 @@ class TrackTik
         return $response->content->access_token;
     }
 
-    public function create(EmployeeDTO $employeeDTO)
-    {
-        $payload = $employeeDTO->mapData();
-        return $this->makeRequest($this->baseUrl . "/v1/employees", $payload);
-    }
-
-    public function update(EmployeeDTO $employeeDTO)
-    {
-        $payload = $employeeDTO->mapData();
-        return $this->makeRequest($this->baseUrl . "/v1/employees/{$payload['id']}", $payload, "PATCH");
-    }
 }
