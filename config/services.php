@@ -30,5 +30,11 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'track_tik' => [
+        'base_url' => env('TRACK_TIK_BASE_URL', 'https://smoke.staffr.net/rest'),
+        'client_id' => env('TRACK_TIK_CLIENT_ID', ''),
+        'client_secret' => env('TRACK_TIK_CLIENT_SECRET', ''),
+        'refresh_token' => env('TRACK_TIK_REFRESH_TOKEN', '')
+    ],
 
 ];
