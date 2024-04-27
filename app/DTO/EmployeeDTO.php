@@ -6,7 +6,6 @@ use App\Enums\ProviderEnum;
 
 class EmployeeDTO 
 {
-
     public function __construct(
         public array $data
     ) {}
