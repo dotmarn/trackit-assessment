@@ -35,18 +35,17 @@ Here is how you can run the project locally:
     php artisan serve
     ``` 
 ### API Endpoint (Create)
-
+1. Create Employees
     ```sh
     POST /api/v1/employees
     ```
-
-### API Endpoint (Update)
-
+1. Update Employee
     ```sh
     PATCH /api/v1/employees?employee_id=1
     ```
 
-#### Provider One Schema
+### Schema
+1. Provider One
     ```json
     {
         "provider": "one",
@@ -55,8 +54,7 @@ Here is how you can run the project locally:
         "email_address": "johndoe@gmail.com"
     }
     ```
-
-#### Provider Two Schema
+1. Provider Two
     ```json
     {
         "provider": "two",
@@ -65,7 +63,3 @@ Here is how you can run the project locally:
         "EmailAddress": "johndoe@gmail.com"
     }
     ```
-
-
-
-1. Create an employee
