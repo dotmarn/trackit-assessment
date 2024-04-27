@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\DTO\EmployeeDTO;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\EmployeeRequest;
 
 class EmployeeController extends Controller
 {
-    public function create(Request $request)
-    {}
+    public function __invoke(EmployeeRequest $request)
+    {
+        $payload = (new EmployeeDTO($request->validated()))->mapData();
 
-    public function update(Request $request, $id)
-    {}
+        return $payload;        
+    }
+
 }
