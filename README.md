@@ -18,6 +18,13 @@ Here is how you can run the project locally:
     ```sh
     cp .env.example .env
     ```
+1. Update the .env file with the following:
+    ```dotenv
+    TRACK_TIK_BASE_URL=https://smoke.staffr.net/rest
+    TRACK_TIK_CLIENT_ID=
+    TRACK_TIK_CLIENT_SECRET=
+    TRACK_TIK_REFRESH_TOKEN=
+    ```
 1. Run installation
     ```sh
     composer install
