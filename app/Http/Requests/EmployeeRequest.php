@@ -34,7 +34,7 @@ class EmployeeRequest extends FormRequest
             case ProviderEnum::EMPLOYEE_PROVIDER_ONE->value:
                 $rules['first_name'] = ['required', 'string', 'min:3'];
                 $rules['last_name'] = ['required', 'string', 'min:3'];
-                $rules['email'] = ['required', 'string', 'email'];
+                $rules['email_address'] = ['required', 'string', 'email'];
                 break;
             case ProviderEnum::EMPLOYEE_PROVIDER_TWO->value:
                 $rules['FirstName'] = ['required', 'string', 'min:3'];

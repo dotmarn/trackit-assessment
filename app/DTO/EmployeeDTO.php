@@ -34,7 +34,7 @@ class EmployeeDTO
         return [
             'firstName' => $this->data['first_name'],
             'lastName' => $this->data['last_name'],
-            'email' => $this->data['email']
+            'email' => $this->data['email_address']
         ];
     }
 
