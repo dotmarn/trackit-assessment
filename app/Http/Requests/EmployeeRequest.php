@@ -42,6 +42,10 @@ class EmployeeRequest extends FormRequest
                 $rules['EmailAddress'] = ['required', 'string', 'email'];
                 break;
         }
+
+        if ($this->method() === 'PATCH') {
+            $rules['employee_id'] = ['required', 'integer'];
+        }
         
         return $rules;
     }
