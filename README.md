@@ -14,11 +14,11 @@ Here is how you can run the project locally:
     ```sh
     cd trackit-assessment
     ```
-1. Copy .env.example file to .env file
+1. Copy `.env.example` file to `.env` file:
     ```sh
     cp .env.example .env
     ```
-1. Update the .env file with the following:
+1. Update the `.env` file with the following:
     ```dotenv
     TRACK_TIK_BASE_URL=https://smoke.staffr.net/rest
     TRACK_TIK_CLIENT_ID=
