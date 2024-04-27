@@ -31,7 +31,7 @@ class TrackTik
                 "Authorization" => "Bearer " . $token,
                 "Content-Type" => "application/json"
             ])->withData(json_encode($payload));
-    
+
             switch ($method) {
                 case 'PATCH':
                     $result = $response->patch();
@@ -42,16 +42,14 @@ class TrackTik
             }
 
             $result = json_decode($result);
-    
-            return response()->apiSuccess(Response::HTTP_OK, 'Successful...', $result);
 
+            return response()->apiSuccess(Response::HTTP_OK, 'Successful...', $result);
         } catch (\Throwable $th) {
             return response()->apiError(Response::HTTP_INTERNAL_SERVER_ERROR, $th->getMessage());
         }
-
     }
 
-    protected function generateAccessToken() : string|null
+    protected function generateAccessToken(): string|null
     {
         $credentials = ClientCredential::where('client_id', config('services.track_tik.client_id'))->first();
 
@@ -74,7 +72,7 @@ class TrackTik
         $url = $this->baseUrl . "/oauth2/access_token";
 
         $response = $this->client->to($url)->withHeaders([
-              'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json'
         ])->withData(json_encode($payload))->post();
 
         $result = json_decode($response);
@@ -94,6 +92,11 @@ class TrackTik
         ]);
 
         return $result->access_token;
+    }
 
+    public function create(EmployeeDTO $employeeDTO)
+    {
+        $payload = $employeeDTO->mapData();
+        return $this->makeRequest($this->baseUrl . "/v1/employees", $payload);
     }
 }
