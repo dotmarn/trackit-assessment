@@ -30,7 +30,7 @@ class TrackTik
             $response = $this->client->to($url)->withHeaders([
                 "Authorization" => "Bearer " . $token,
                 "Content-Type" => "application/json"
-            ])->withData(json_encode($payload));
+            ])->withData($payload)->returnResponseObject()->asJson();
 
             switch ($method) {
                 case 'PATCH':
@@ -41,9 +41,12 @@ class TrackTik
                     break;
             }
 
-            $result = json_decode($result);
+            if ($result->status === Response::HTTP_OK) {
+                return response()->apiSuccess(Response::HTTP_OK, 'Successful...', $result->content);
+            }
+            
+            return response()->apiError($result->status, $result->content->message);
 
-            return response()->apiSuccess(Response::HTTP_OK, 'Successful...', $result);
         } catch (\Throwable $th) {
             return response()->apiError(Response::HTTP_INTERNAL_SERVER_ERROR, $th->getMessage());
         }
@@ -54,10 +57,8 @@ class TrackTik
         $credentials = ClientCredential::where('client_id', config('services.track_tik.client_id'))->first();
 
         if ($credentials) {
-            $current_time = time();
-
-            $expiry = (int)($credentials->expires_in / 1000);
-            if ($current_time < $expiry) {
+            $last_updated = $credentials->updated_at->addSeconds($credentials->expires_in);
+            if (now()->lt($last_updated)) {
                 return $credentials->access_token;
             }
         }
@@ -73,12 +74,10 @@ class TrackTik
 
         $response = $this->client->to($url)->withHeaders([
             'Content-Type' => 'application/json'
-        ])->withData(json_encode($payload))->post();
+        ])->withData($payload)->returnResponseObject()->asJson()->post();
 
-        $result = json_decode($response);
-
-        if ($result?->status !== Response::HTTP_OK) {
-            Log::error("TrackTik Token Response: " . $result?->message);
+        if ($response->status !== Response::HTTP_OK) {
+            Log::error("TrackTik Token Response: " . $response->content->message);
             return null;
         }
 
@@ -86,12 +85,12 @@ class TrackTik
             'client_id' => config('services.track_tik.client_id')
         ], [
             'client_secret' => config('services.track_tik.client_secret'),
-            'access_token' => $result->access_token,
-            'expires_in' => $result->expires_in,
-            'refresh_token' => $result->refresh_token
+            'access_token' => $response->content->access_token,
+            'expires_in' => $response->content->expires_in,
+            'refresh_token' => $response->content->refresh_token
         ]);
 
-        return $result->access_token;
+        return $response->content->access_token;
     }
 
     public function create(EmployeeDTO $employeeDTO)
