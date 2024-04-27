@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\DTO\EmployeeDTO;
-use App\Models\ClientCredential;
 use Illuminate\Http\Response;
+use App\Models\ClientCredential;
+use Illuminate\Support\Facades\Log;
 
 class TrackTik
 {
@@ -16,7 +17,41 @@ class TrackTik
         $this->client = new \Ixudra\Curl\CurlService();
     }
 
-    protected function generateAccessToken()
+    protected function makeRequest($url, $payload, $method = "POST")
+    {
+        $token = $this->generateAccessToken();
+
+        if (is_null($token)) {
+            return response()->apiError(Response::HTTP_UNAUTHORIZED, 'Unauthorized');
+        }
+
+        try {
+
+            $response = $this->client->to($url)->withHeaders([
+                "Authorization" => "Bearer " . $token,
+                "Content-Type" => "application/json"
+            ])->withData(json_encode($payload));
+    
+            switch ($method) {
+                case 'PATCH':
+                    $result = $response->patch();
+                    break;
+                default:
+                    $result = $response->post();
+                    break;
+            }
+
+            $result = json_decode($result);
+    
+            return response()->apiSuccess(Response::HTTP_OK, 'Successful...', $result);
+
+        } catch (\Throwable $th) {
+            return response()->apiError(Response::HTTP_INTERNAL_SERVER_ERROR, $th->getMessage());
+        }
+
+    }
+
+    protected function generateAccessToken() : string|null
     {
         $credentials = ClientCredential::where('client_id', config('services.track_tik.client_id'))->first();
 
@@ -44,8 +79,9 @@ class TrackTik
 
         $result = json_decode($response);
 
-        if (optional($result)->status !== Response::HTTP_OK) {
-            return response()->apiError($result->status, $result->message);
+        if ($result?->status !== Response::HTTP_OK) {
+            Log::error("TrackTik Token Response: " . $result?->message);
+            return null;
         }
 
         ClientCredential::updateOrCreate([
