@@ -99,4 +99,10 @@ class TrackTik
         $payload = $employeeDTO->mapData();
         return $this->makeRequest($this->baseUrl . "/v1/employees", $payload);
     }
+
+    public function update(EmployeeDTO $employeeDTO)
+    {
+        $payload = $employeeDTO->mapData();
+        return $this->makeRequest($this->baseUrl . "/v1/employees/{$payload['id']}", $payload, "PATCH");
+    }
 }
